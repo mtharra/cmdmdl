@@ -15,8 +15,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        VERSION=$(git shortlog)
-        gh release create $VERSION
+        VERSION=$(git rev-parse HEAD)
+        gh release create 1.0.0
   Build_release:
     needs: Pre_release
     strategy:
