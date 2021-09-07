@@ -4,7 +4,9 @@
   "description": "Custom Camunda Modeler",
   "main": "index.js",
   "scripts": {
-    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+    "build": "run-s client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
+    "build:distro": "node tasks/distro.js",
+    "build:test-distro": "node tasks/test-distro.js"
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,8 @@
   "homepage": "https://github.com/mtharra/cmdmdl#readme",
   "dependencies": {
     "camunda-modeler": "^1.2.1"
+  },
+  "devDependencies": {
+    "builder-util": "^22.3.3"
   }
 }
