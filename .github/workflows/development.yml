@@ -15,8 +15,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        TAG=$(git describe --tags --abbrev=0)
-        gh release create $TAG --draft --title $TAG
+        #TAG=$(git describe --tags --abbrev=0)
+        gh release create 1.0.0
   Build_release:
     needs: Pre_release
     strategy:
