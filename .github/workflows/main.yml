@@ -1,0 +1,61 @@
+name: Deploy Production Server
+on: 
+  push:
+    branches: master
+  
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Pull repository into the current pipeline
+      - name: Pull repository
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      # Setup container with private SSH Key (used by rsync)
+      - name: Load private SSH key
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          
+      # Run Composer
+      - name: Composer installation
+        run: composer install
+        
+      # Install NPM
+      - name: NPM installation
+        run: npm ci
+        
+      # Compile assets
+      - name: Compile css, js and img assets
+        run: npm run dev
+
+      # rsync
+      # exclude web/uploads is there to avoid deleting user uploaded files
+      # Setting StrictHostKeyChecking=no will automatically add new host keys to the user known hosts files.
+      - name: Deploy with rsync
+        run: |
+          rsync -azh --delete-after --exclude ".env" --exclude "/storage/" --exclude "/public/storage" --exclude ".github/" -e "ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }}" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/sites/gg.inperpetuum
+      
+      
+      # Execute installation commands on server in case build server does not work as intended
+      - name: Run post deploy scripts
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /var/www/sites/gg.inperpetuum
+            php artisan optimize:clear
+            chmod 770 bootstrap/cache
