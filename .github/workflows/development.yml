@@ -16,7 +16,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         #VERSION=$(git rev-parse HEAD)
-        gh release create 1.0.2
+        gh release create 1.0.3
   Build_release:
     needs: Pre_release
     strategy:
@@ -34,7 +34,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '10.x'
+        node-version: '14.x'
     - name: Cache Node.js modules
       uses: actions/cache@v2
       with:
