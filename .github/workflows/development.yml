@@ -16,7 +16,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         #VERSION=$(git rev-parse HEAD)
-        gh release create 1.0.1
+        gh release create 1.0.2
   Build_release:
     needs: Pre_release
     strategy:
