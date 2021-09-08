@@ -2,11 +2,11 @@
   "name": "cmdmdl",
   "version": "1.0.0",
   "description": "Custom Camunda Modeler",
-  "main": "index.js",
   "scripts": {
-    "build": "run-s client:build \"build:distro -- {@}\" \"build:test-distro -- {@}\" --",
-    "build:distro": "node tasks/distro.js",
-    "build:test-distro": "node tasks/test-distro.js"
+    "build": "run-s client:build \"build:distro -- {@}\" --",
+    "build:distro": "node node_modules/camunda-modeler/tasks/distro.js",
+    "client:build": "(cd node_modules/camunda-modeler/client && npm run build)",
+    "postinstall": "electron-builder install-app-deps && lerna bootstrap"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,16 @@
     "camunda-modeler": "^1.2.1"
   },
   "devDependencies": {
-    "builder-util": "^22.3.3"
+    "archiver": "^3.0.3",
+    "builder-util": "^22.3.3",
+    "electron": "^12.0.5",
+    "electron-builder": "^22.10.5",
+    "electron-devtools-installer": "^3.1.1",
+    "electron-notarize": "^1.0.0",
+    "electron-packager": "^15.3.0",
+    "electron-publisher-s3": "^20.17.2",
+    "electron-reloader": "^1.2.0",
+    "lerna": "^3.22.1",
+    "ncp": "^2.0.0"
   }
 }
